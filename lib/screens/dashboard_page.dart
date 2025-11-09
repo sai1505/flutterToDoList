@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/cubit/todo_cubit.dart';
+import 'package:todolist/models/todo_model.dart';
+import 'package:todolist/screens/add_task_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -92,11 +96,19 @@ class DashboardPage extends StatelessWidget {
                       const SizedBox(height: 12),
                       Expanded(
                         child: Center(
-                          child: Text(
-                            'No tasks added yet.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: textColor.withOpacity(0.6),
-                            ),
+                          child: BlocBuilder<TodoCubit, List<TodoModel>>(
+                            builder: (context, state) {
+                              return ListView.builder(
+                                itemCount: state.length,
+                                itemBuilder: (context, index) {
+                                  final todo = state[index];
+
+                                  return ListTile(
+                                    title: Text(todo.taskData),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -111,7 +123,10 @@ class DashboardPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: textColor,
         onPressed: () {
-          // TODO: navigate to add task page
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddTaskPage()),
+          );
         },
         child: Icon(
           Icons.add,
